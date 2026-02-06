@@ -20,6 +20,9 @@ function openFeatures() {
 }
 openFeatures()
 
+
+
+
 function todoList() {
     let form = document.querySelector(".addTask form")
     let taskInput = document.querySelector(".addTask form input")
@@ -44,7 +47,9 @@ function todoList() {
                 imp: taskCheckbox.checked
             })
             renderTask()
-            location.reload()
+            taskCheckbox.checked = 'false'
+            taskInput.value = ''
+            taskDetailInput.value = ''
         })
     }
 
@@ -75,19 +80,20 @@ function todoList() {
 
 
         allTask.innerHTML = sum
+
+        localStorage.setItem('currentTask', JSON.stringify(currentTask))
+
+        document.querySelectorAll('.task button').forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            currentTask.splice(btn.id, 1)
+            renderTask()
+        })
+    })
     }
 
     renderTask()
     addTask()
 
-    let markCompletedBtn = document.querySelectorAll('.task button')
-
-    markCompletedBtn.forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            currentTask.splice(btn.id, 1)
-            renderTask()
-            location.reload()
-        })
-    })
+    
 }
 todoList()

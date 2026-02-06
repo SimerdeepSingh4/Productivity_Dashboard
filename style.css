@@ -132,7 +132,7 @@ section.allElems{
     scale: 0.97;;
 }
 .todo-fullpage{
-    display: block;
+    display: hidden;
 }
 
 .todo-fullpage h2{
