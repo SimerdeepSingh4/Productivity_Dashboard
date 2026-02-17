@@ -55,7 +55,7 @@
 
     if (!navigator.geolocation) {
         try {
-            await updateWeather('New York');
+            await updateWeather('New Delhi');
         } catch (error) {
             applyFallbackWeather();
         }
@@ -78,12 +78,12 @@
                     geoData.address?.city ||
                     geoData.address?.town ||
                     geoData.address?.county ||
-                    'New York';
+                    'New Delhi';
 
                 await updateWeather(city);
             } catch (error) {
                 try {
-                    await updateWeather('New York');
+                    await updateWeather('New Delhi');
                 } catch (fallbackError) {
                     applyFallbackWeather();
                 }
@@ -91,7 +91,7 @@
         },
         async () => {
             try {
-                await updateWeather('New York');
+                await updateWeather('New Delhi');
             } catch (error) {
                 applyFallbackWeather();
             }
