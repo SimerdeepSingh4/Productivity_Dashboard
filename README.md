@@ -76,7 +76,16 @@ Modern Chromium, Firefox, and Safari versions are recommended (ES module support
 
 
 
-## Credits
+## 🙋‍♂️ Author
 
-- Icons from [Icons8](https://icons8.com)
-- Images from [Unsplash](https://unsplash.com)
+**Simerdeep Singh Gandhi**
+
+- Portfolio: [https://simerdeep-portfolio.vercel.app/](https://simerdeep-portfolio.vercel.app/)
+- GitHub: [@SimerdeepSingh4](https://github.com/SimerdeepSingh4)
+- LinkedIn: [Simerdeep Singh Gandhi](https://www.linkedin.com/in/simerdeep-singh-gandhi/)
+
+---
+
+## ✨ Show Your Support
+
+Give a ⭐️ if this project helped you!
