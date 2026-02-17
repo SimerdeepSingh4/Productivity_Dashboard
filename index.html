@@ -1,84 +1,114 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Productivity Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="src/style.css" />
 </head>
 
 <body>
     <div id="main">
-        <nav>
-            <div class="nav-in">
-                <h2>Productivity Dashboard</h2>
-                <div class="theme">
-                    <i class="ri-sun-line"></i>
+        <div class="main-content">
+            <header class="topbar">
+                <div class="brand-block">
+                    <h2>Productivity Dashboard</h2>
                 </div>
-            </div>
-        </nav>
-        <section class="allElems">
 
-            <header>
-                <div class="header1">
-                    <h2 class="date">20 April, 2025</h2>
+                <div class="header-left">
+                    <h2 class="date"></h2>
                     <h1 class="day"></h1>
                     <h4 class="location"></h4>
                 </div>
 
-                <div class="header2">
+                <div class="header-right">
                     <h2 class="temp"></h2>
-                    <h4 class="condition">Light rain</h4>
-                    <h3 class="feelLike">Feel Like:</h3>
-                    <h3 class="humidity">Humidity: </h3>
-                    <h3 class="wind">Wind: 0 km/hr</h3>
-                    <h3 class="pm2">pm2.5: </h3>
-                    <h3 class="uv">UV: </h3>
-
-
-
+                    <div class="weather-condition">
+                        <img class="icon" src="" alt="Weather condition icon" />
+                        <h4 class="condition"></h4>
+                    </div>
                 </div>
+
+                <button class="theme" type="button">
+                    <h4>Switch Theme</h4>
+                </button>
             </header>
-            <div class="allFeatures">
-                <div class="todo elem" id="0">
-                    <img src="https://i.pinimg.com/736x/e2/ea/84/e2ea84bc638b1720dcff55b5686b639f.jpg" alt="" />
-                    <h2>To Do List</h2>
+
+            <section class="allElems">
+                <div class="weather-details">
+                    <div class="detail">
+                        <p>Feels Like</p>
+                        <h3 class="feelLike">--</h3>
+                    </div>
+                    <div class="detail">
+                        <p>Humidity</p>
+                        <h3 class="humidity">--</h3>
+                    </div>
+                    <div class="detail">
+                        <p>Wind</p>
+                        <h3 class="wind">--</h3>
+                    </div>
+                    <div class="detail">
+                        <p>PM2.5</p>
+                        <h3 class="pm2">--</h3>
+                    </div>
+                    <div class="detail">
+                        <p>UV Index</p>
+                        <h3 class="uv">--</h3>
+                    </div>
                 </div>
-                <div class="daily elem" id="1">
-                    <img src="https://i.pinimg.com/736x/3a/e4/1c/3ae41c1152dbfb91aa6348739c54c957.jpg" alt="" />
-                    <h2>Daily Planner</h2>
+
+                <div class="allFeatures">
+                    <div class="todo elem" id="0">
+                        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1400&auto=format&fit=crop" alt="Notebook and desk" />
+                        <h2>To-Do Manager</h2>
+                    </div>
+                    <div class="daily elem" id="1">
+                        <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1400&auto=format&fit=crop" alt="Calendar planning setup" />
+                        <h2>Daily Planner</h2>
+                    </div>
+                    <div class="moti elem" id="2">
+                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1400&auto=format&fit=crop" alt="Motivational workspace" />
+                        <h2>Motivational Quotes</h2>
+                    </div>
+                    <div class="pomo elem" id="3">
+                        <img src="https://images.unsplash.com/photo-1474631245212-32dc3c8310c6?q=80&w=1400&auto=format&fit=crop" alt="Focus timer" />
+                        <h2>Focus Timer (Pomodoro)</h2>
+                    </div>
+                    <div class="idea elem" id="4">
+                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1400&auto=format&fit=crop" alt="Idea notes" />
+                        <h2>Idea Board</h2>
+                    </div>
                 </div>
-                <div class="moti elem" id="2">
-                    <img src="https://productivity-dashboard-sigma.vercel.app/images/img3.webp" alt="" />
-                    <h2>Motivation</h2>
-                </div>
-                <div class="pomo elem" id="3">
-                    <img src="https://i.pinimg.com/1200x/d2/c7/85/d2c7855b52090687f4024bf6b7648605.jpg" alt="" />
-                    <h2>Pomodoro Timer</h2>
-                </div>
-                <div class="idea elem" id="4">
-                    <img src="https://images.unsplash.com/photo-1718202248232-0cdbc15d29b2?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="" />
-                    <h2>Idea Vault</h2>
-                </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <section class="fullElem todo-fullpage">
             <button class="back" id="0">Close</button>
-            <h2>Your Personalised Task List</h2>
+            <h2>Your Personalized Task List</h2>
+            <div class="todo-tools">
+                <input class="todo-search" type="text" placeholder="Search tasks..." />
+                <div class="todo-filters">
+                    <button class="todo-filter active" type="button" data-filter="all">All</button>
+                    <button class="todo-filter" type="button" data-filter="important">Important</button>
+                </div>
+                <div class="todo-stats">
+                    <span class="todo-total">Total: 0</span>
+                    <span class="todo-important">Important: 0</span>
+                </div>
+                <button class="todo-clear" type="button">Clear All</button>
+            </div>
 
             <div class="todo-container">
                 <div class="addTask">
                     <form>
-                        <input id="task-input" required type="text" placeholder="Enter Task" />
-                        <textarea required placeholder="Enter details" name="" id="" rows="8"></textarea>
-                        <div class="mark-imp">
-                            <input type="checkbox" name="" id="check" />
-                            <label for="check">Mark as important!</label>
-                        </div>
+                        <input id="task-input" required type="text" placeholder="Enter task" />
+                        <textarea required placeholder="Enter details" rows="8"></textarea>
+                        <label class="imp-check">
+                            <input id="check" type="checkbox" />
+                            Mark as important
+                        </label>
                         <button>Add Task</button>
                     </form>
                 </div>
@@ -88,7 +118,12 @@
 
         <section class="fullElem planner-fullpage">
             <button class="back" id="1">Close</button>
-            <h1>Plan your Day to be more productive</h1>
+            <h1>Plan your day with intention</h1>
+            <div class="planner-controls">
+                <button class="planner-fill" type="button">Quick Fill</button>
+                <button class="planner-export" type="button">Export Plan</button>
+                <button class="planner-clear" type="button">Clear Plan</button>
+            </div>
             <div class="day-planner"></div>
         </section>
 
@@ -97,15 +132,19 @@
             <div class="motivation-fullpage-container">
                 <div class="motivation-container">
                     <div class="motivation-wrapper">
-                        <img src="./icons8-quotes-96.png" alt="" />
+                        <img src="./icons8-quotes-96.png" alt="Quote icon" />
                         <div class="motivation-1">
-                            <h2>Qoute of the Day</h2>
+                            <h2>Quote of the Day</h2>
                         </div>
                         <div class="motivation-2">
-                            <h1>Loading.....</h1>
+                            <h1>Loading...</h1>
                         </div>
                         <div class="motivation-3">
-                            <h2>Author's Name</h2>
+                            <h2>Author Name</h2>
+                        </div>
+                        <div class="motivation-actions">
+                            <button class="quote-refresh" type="button">New Quote</button>
+                            <button class="quote-copy" type="button">Copy Quote</button>
                         </div>
                     </div>
                 </div>
@@ -114,8 +153,20 @@
 
         <section class="fullElem pomodoro-fullpage">
             <button class="back" id="3">Close</button>
-            <h1>Study with me!</h1>
+            <h1>Focus Sprint</h1>
             <h4 class="session">Work Session</h4>
+            <div class="pomo-config">
+                <label>
+                    Work (min)
+                    <input class="work-minutes" type="number" min="1" max="120" value="25" />
+                </label>
+                <label>
+                    Break (min)
+                    <input class="break-minutes" type="number" min="1" max="60" value="5" />
+                </label>
+                <button class="apply-duration" type="button">Apply</button>
+                <p class="completed-cycles">Completed Cycles: 0</p>
+            </div>
             <div class="pomo-timer">
                 <h1>25:00</h1>
                 <button class="start-timer">Start</button>
@@ -129,21 +180,22 @@
             <h2>Idea Vault</h2>
             <div class="idea-container">
                 <div class="addIdeas">
+                    <div class="idea-tools">
+                        <input class="idea-search" type="text" placeholder="Search ideas..." />
+                        <button class="idea-random" type="button">Pick Random</button>
+                    </div>
+                    <p class="idea-highlight">Random pick will appear here.</p>
                     <form>
-                        <input id="idea-input" required type="text" placeholder="Enter your ideas" />
-
+                        <input id="idea-input" required type="text" placeholder="Capture your idea" />
                         <button>+</button>
                     </form>
-                    <div class=".h-line"></div>
-                    <div class="allIdeas">
-
-                    </div>
+                    <div class="allIdeas"></div>
                 </div>
+            </div>
         </section>
-
-
     </div>
-    <script src="script.js"></script>
+
+    <script type="module" src="src/script.js"></script>
 </body>
 
 </html>
