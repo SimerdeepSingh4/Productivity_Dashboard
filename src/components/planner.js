@@ -3,6 +3,7 @@ export default function dailyPlanner() {
     const fillButton = document.querySelector('.planner-fill');
     const clearButton = document.querySelector('.planner-clear');
     const exportButton = document.querySelector('.planner-export');
+
     if (!dayPlanner) return;
 
     function safeReadPlans() {
@@ -15,64 +16,60 @@ export default function dailyPlanner() {
     }
 
     const dayPlanData = safeReadPlans();
-    const hours = Array.from({ length: 18 }, (_, idx) => `${6 + idx}:00 - ${7 + idx}:00`);
+    const hours = Array.from({ length: 14 }, (_, idx) => `${7 + idx}:00`);
 
-    dayPlanner.innerHTML = '';
-    hours.forEach((slot, idx) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'day-planner-time';
-
-        const label = document.createElement('p');
-        label.textContent = slot;
-
-        const input = document.createElement('input');
-        input.id = String(idx);
-        input.type = 'text';
-        input.placeholder = '...';
-        input.value = String(dayPlanData[idx] || '');
-
-        wrapper.appendChild(label);
-        wrapper.appendChild(input);
-        dayPlanner.appendChild(wrapper);
-    });
-
+    let debounceTimeout;
     function persistPlans() {
-        localStorage.setItem('dayPlanData', JSON.stringify(dayPlanData));
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            localStorage.setItem('dayPlanData', JSON.stringify(dayPlanData));
+            window.dispatchEvent(new CustomEvent('dataUpdate'));
+        }, 500); // 500ms debounce
     }
 
-    function updateInputsFromData() {
-        dayPlanner.querySelectorAll('input').forEach((input) => {
-            if (!(input instanceof HTMLInputElement)) return;
-            input.value = String(dayPlanData[input.id] || '');
+    function renderPlanner() {
+        dayPlanner.innerHTML = '';
+        hours.forEach((slot, idx) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'planner-slot';
+
+            const label = document.createElement('label');
+            label.textContent = slot;
+
+            const input = document.createElement('input');
+            input.id = String(idx);
+            input.type = 'text';
+            input.placeholder = '...';
+            input.value = String(dayPlanData[idx] || '');
+
+            wrapper.appendChild(label);
+            wrapper.appendChild(input);
+            dayPlanner.appendChild(wrapper);
         });
     }
 
-    let persistTimeout = null;
+    // Event delegation for inputs - moved OUT of render to avoid duplication
     dayPlanner.addEventListener('input', (event) => {
         const target = event.target;
         if (!(target instanceof HTMLInputElement)) return;
         dayPlanData[target.id] = target.value;
-
-        clearTimeout(persistTimeout);
-        persistTimeout = setTimeout(() => {
-            persistPlans();
-        }, 250);
+        persistPlans();
     });
 
     if (fillButton) {
         fillButton.addEventListener('click', () => {
             const quickTemplate = {
-                0: 'Wake up and stretch',
-                1: 'Deep work block',
-                4: 'Lunch + short walk',
-                5: 'Meetings / communication',
-                8: 'Workout / reset',
-                10: 'Review and plan tomorrow'
+                0: 'Wake up & morning routine',
+                1: 'Deep Work Block 1',
+                4: 'Lunch & walk',
+                5: 'Deep Work Block 2',
+                8: 'Workout / Reset',
+                10: 'Plan for tomorrow'
             };
             Object.keys(quickTemplate).forEach((key) => {
                 dayPlanData[key] = quickTemplate[key];
             });
-            updateInputsFromData();
+            renderPlanner();
             persistPlans();
         });
     }
@@ -82,7 +79,7 @@ export default function dailyPlanner() {
             Object.keys(dayPlanData).forEach((key) => {
                 dayPlanData[key] = '';
             });
-            updateInputsFromData();
+            renderPlanner();
             persistPlans();
         });
     }
@@ -99,4 +96,6 @@ export default function dailyPlanner() {
             URL.revokeObjectURL(url);
         });
     }
+
+    renderPlanner();
 }

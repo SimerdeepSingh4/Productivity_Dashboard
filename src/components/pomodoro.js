@@ -1,57 +1,64 @@
-export default function pomodoroTimer() {
-    const timer = document.querySelector('.pomo-timer h1');
-    const startBtn = document.querySelector('.pomo-timer .start-timer');
-    const pauseBtn = document.querySelector('.pomo-timer .pause-timer');
-    const resetBtn = document.querySelector('.pomo-timer .reset-timer');
-    const session = document.querySelector('.pomodoro-fullpage .session');
-    const workMinutesInput = document.querySelector('.work-minutes');
-    const breakMinutesInput = document.querySelector('.break-minutes');
-    const applyDurationButton = document.querySelector('.apply-duration');
-    const completedCycles = document.querySelector('.completed-cycles');
+import { statsManager } from '../utils/stats.js';
 
-    if (!timer || !startBtn || !pauseBtn || !resetBtn || !session) return;
+export default function pomodoroTimer() {
+    const timerText = document.querySelector('.timer-text');
+    const progressBar = document.querySelector('#tracker-progress');
+    const startBtn = document.querySelector('.ctrl-btn.start');
+    const pauseBtn = document.querySelector('.ctrl-btn.pause');
+    const stopBtn = document.querySelector('.ctrl-btn.stop');
+    
+    if (!timerText) return;
 
     let isWorkSession = true;
     let workSeconds = 25 * 60;
     let breakSeconds = 5 * 60;
     let totalSeconds = workSeconds;
+    let initialSeconds = workSeconds;
     let timerInterval = null;
-    let cycleCount = 0;
+    let isPaused = true;
+    let focusTickCounter = 0;
+
+    const ARC_LENGTH = 126; 
 
     function updateTimer() {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
-        timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    function updateSessionUI() {
-        if (isWorkSession) {
-            session.textContent = 'Work Session';
-            session.style.backgroundColor = 'var(--green)';
-        } else {
-            session.textContent = 'Take a Break';
-            session.style.backgroundColor = 'var(--blue)';
-        }
-        if (completedCycles) {
-            completedCycles.textContent = `Completed Cycles: ${cycleCount}`;
+        timerText.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        if (progressBar) {
+            const progress = totalSeconds / initialSeconds;
+            const offset = ARC_LENGTH * (1 - progress);
+            progressBar.style.strokeDashoffset = offset;
         }
     }
 
     function startTimer() {
         if (timerInterval) return;
+        isPaused = false;
+        
         timerInterval = setInterval(() => {
             if (totalSeconds > 0) {
                 totalSeconds -= 1;
+                
+                // Track focus time if in work session
+                if (isWorkSession) {
+                    focusTickCounter++;
+                    if (focusTickCounter >= 60) {
+                        statsManager.addFocusMinutes(1);
+                        focusTickCounter = 0;
+                    }
+                }
+
                 updateTimer();
                 return;
             }
 
             isWorkSession = !isWorkSession;
-            if (isWorkSession) {
-                cycleCount += 1;
-            }
             totalSeconds = isWorkSession ? workSeconds : breakSeconds;
-            updateSessionUI();
+            initialSeconds = totalSeconds;
+            
+            // Broadcast update for balance chart if needed
+            window.dispatchEvent(new CustomEvent('dataUpdate'));
             updateTimer();
         }, 1000);
     }
@@ -59,33 +66,37 @@ export default function pomodoroTimer() {
     function pauseTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
+        isPaused = true;
     }
 
     function resetTimer() {
         pauseTimer();
         isWorkSession = true;
         totalSeconds = workSeconds;
-        cycleCount = 0;
-        updateSessionUI();
+        initialSeconds = workSeconds;
         updateTimer();
     }
 
-    if (applyDurationButton && workMinutesInput && breakMinutesInput) {
-        applyDurationButton.addEventListener('click', () => {
-            const workValue = Number(workMinutesInput.value);
-            const breakValue = Number(breakMinutesInput.value);
+    if (startBtn) {
+        startBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startTimer();
+        });
+    }
 
-            if (!Number.isFinite(workValue) || !Number.isFinite(breakValue)) return;
-            workSeconds = Math.min(120, Math.max(1, Math.floor(workValue))) * 60;
-            breakSeconds = Math.min(60, Math.max(1, Math.floor(breakValue))) * 60;
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pauseTimer();
+        });
+    }
 
+    if (stopBtn) {
+        stopBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             resetTimer();
         });
     }
 
-    updateSessionUI();
     updateTimer();
-    startBtn.addEventListener('click', startTimer);
-    pauseBtn.addEventListener('click', pauseTimer);
-    resetBtn.addEventListener('click', resetTimer);
 }

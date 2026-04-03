@@ -1,10 +1,11 @@
+import { statsManager } from '../utils/stats.js';
+
 export default function IdeasList() {
     const form = document.querySelector('.addIdeas form');
-    const ideaInput = document.querySelector('.addIdeas form input');
+    const ideaInput = document.querySelector('#idea-input');
     const allIdeas = document.querySelector('.allIdeas');
     const searchInput = document.querySelector('.idea-search');
-    const randomButton = document.querySelector('.idea-random');
-    const highlight = document.querySelector('.idea-highlight');
+    const clearButton = document.querySelector('.idea-clear');
 
     if (!form || !ideaInput || !allIdeas) return;
 
@@ -28,31 +29,32 @@ export default function IdeasList() {
 
     function persistIdeas() {
         localStorage.setItem('currentIdeas', JSON.stringify(currentIdeas));
+        statsManager.logActivity(); // Track activity for streak
+        window.dispatchEvent(new CustomEvent('dataUpdate'));
     }
 
     function renderIdeas() {
         const filteredIdeas = currentIdeas
-            .map((idea, index) => ({ idea, index }))
-            .filter(({ idea }) => String(idea.ideas || '').toLowerCase().includes(searchTerm));
+            .filter(({ ideas }) => String(ideas || '').toLowerCase().includes(searchTerm));
 
         if (!currentIdeas.length || !filteredIdeas.length) {
             allIdeas.innerHTML = '<p class="empty-state">No ideas saved yet.</p>';
-            persistIdeas();
             return;
         }
 
         let sum = '';
-        filteredIdeas.forEach(({ idea: elem, index: id }) => {
+        filteredIdeas.forEach((elem, index) => {
             sum += `
-        <div class="ideas">
-            <h5>${escapeHTML(String(elem.ideas || 'Untitled idea'))}</h5>
-            <button type="button" data-idea-id="${id}" aria-label="Delete idea">X</button>
-        </div>
-    `;
+                <div class="task-item">
+                    <div class="task-info">
+                        <h5>${escapeHTML(String(elem.ideas || 'Untitled idea'))}</h5>
+                    </div>
+                    <button type="button" data-idea-id="${index}" class="btn-secondary">&times;</button>
+                </div>
+            `;
         });
 
         allIdeas.innerHTML = sum;
-        persistIdeas();
     }
 
     form.addEventListener('submit', (event) => {
@@ -61,6 +63,7 @@ export default function IdeasList() {
         if (!value) return;
 
         currentIdeas.push({ ideas: value });
+        persistIdeas();
         renderIdeas();
         ideaInput.value = '';
     });
@@ -74,6 +77,7 @@ export default function IdeasList() {
         if (!Number.isInteger(ideaId)) return;
 
         currentIdeas.splice(ideaId, 1);
+        persistIdeas();
         renderIdeas();
     });
 
@@ -86,17 +90,11 @@ export default function IdeasList() {
         });
     }
 
-    if (randomButton && highlight) {
-        randomButton.addEventListener('click', () => {
-            const source = currentIdeas.filter((idea) =>
-                String(idea.ideas || '').toLowerCase().includes(searchTerm)
-            );
-            if (!source.length) {
-                highlight.textContent = 'No matching ideas available.';
-                return;
-            }
-            const choice = source[Math.floor(Math.random() * source.length)];
-            highlight.textContent = `Random Pick: ${choice.ideas}`;
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            currentIdeas = [];
+            persistIdeas();
+            renderIdeas();
         });
     }
 

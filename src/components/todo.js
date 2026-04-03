@@ -1,16 +1,16 @@
+import { statsManager } from '../utils/stats.js';
+
 export default function todoList() {
     const form = document.querySelector('.addTask form');
-    const taskInput = document.querySelector('.addTask form input');
-    const taskDetailInput = document.querySelector('.addTask form textarea');
-    const taskCheckbox = document.querySelector('.addTask form #check');
+    const taskInput = document.querySelector('#task-input');
+    const taskDetailInput = document.querySelector('#task-detail');
+    const taskCheckbox = document.querySelector('#check');
     const allTask = document.querySelector('.allTask');
     const searchInput = document.querySelector('.todo-search');
     const filterButtons = document.querySelectorAll('.todo-filter');
-    const totalStat = document.querySelector('.todo-total');
-    const importantStat = document.querySelector('.todo-important');
     const clearAllButton = document.querySelector('.todo-clear');
 
-    if (!form || !taskInput || !taskDetailInput || !taskCheckbox || !allTask) return;
+    if (!form || !taskInput || !taskDetailInput || !allTask) return;
 
     function safeReadTasks() {
         try {
@@ -33,6 +33,8 @@ export default function todoList() {
 
     function persistTasks() {
         localStorage.setItem('currentTask', JSON.stringify(currentTask));
+        statsManager.logActivity(); // Track activity for streak
+        window.dispatchEvent(new CustomEvent('dataUpdate'));
     }
 
     function matchesFilters(task) {
@@ -44,43 +46,34 @@ export default function todoList() {
     }
 
     function renderTask() {
-        const importantCount = currentTask.filter((task) => Boolean(task.imp)).length;
-        if (totalStat) totalStat.textContent = `Total: ${currentTask.length}`;
-        if (importantStat) importantStat.textContent = `Important: ${importantCount}`;
-
         const visibleTasks = currentTask
             .map((task, index) => ({ task, index }))
             .filter(({ task }) => matchesFilters(task));
 
         if (!currentTask.length || !visibleTasks.length) {
             allTask.innerHTML = '<p class="empty-state">No tasks yet. Add one to get started.</p>';
-            persistTasks();
             return;
         }
 
         let sum = '';
         visibleTasks.forEach(({ task: elem, index: id }) => {
             const taskTitle = escapeHTML(String(elem.task || 'Untitled Task'));
-            const taskDetails = escapeHTML(String(elem.details || 'No details'));
             const isImportant = Boolean(elem.imp);
 
             sum += `
-        <div class="task">
-            <h5>
-                ${taskTitle}
-                <span class="${isImportant}">imp</span>
-            </h5>
-            <details>
-                <summary>View details</summary>
-                <p>${taskDetails}</p>
-            </details>
-            <button type="button" data-task-id="${id}">Mark as completed</button>
-        </div>
-    `;
+                <div class="task-item">
+                    <div class="task-info">
+                        <h5>
+                            ${taskTitle}
+                            ${isImportant ? '<span class="tag-important">IMP</span>' : ''}
+                        </h5>
+                    </div>
+                    <button type="button" data-task-id="${id}" class="btn-secondary">Complete</button>
+                </div>
+            `;
         });
 
         allTask.innerHTML = sum;
-        persistTasks();
     }
 
     form.addEventListener('submit', (event) => {
@@ -88,16 +81,17 @@ export default function todoList() {
 
         const taskValue = taskInput.value.trim();
         const detailValue = taskDetailInput.value.trim();
-        if (!taskValue || !detailValue) return;
+        if (!taskValue) return;
 
         currentTask.push({
             task: taskValue,
             details: detailValue,
-            imp: taskCheckbox.checked
+            imp: taskCheckbox ? taskCheckbox.checked : false
         });
 
+        persistTasks();
         renderTask();
-        taskCheckbox.checked = false;
+        if (taskCheckbox) taskCheckbox.checked = false;
         taskInput.value = '';
         taskDetailInput.value = '';
     });
@@ -111,6 +105,8 @@ export default function todoList() {
         if (!Number.isInteger(taskId)) return;
 
         currentTask.splice(taskId, 1);
+        statsManager.recordTaskCompletion(); 
+        persistTasks();
         renderTask();
     });
 
@@ -135,6 +131,7 @@ export default function todoList() {
     if (clearAllButton) {
         clearAllButton.addEventListener('click', () => {
             currentTask = [];
+            persistTasks();
             renderTask();
         });
     }

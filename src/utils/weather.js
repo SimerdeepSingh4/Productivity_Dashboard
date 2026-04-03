@@ -1,30 +1,18 @@
-﻿export default async function getWeather() {
+export default async function getWeather() {
     const apiKey = 'e14e105c8eb24b31b0a155937260201';
-    const temp = document.querySelector('.temp');
-    const condition = document.querySelector('.condition');
-    const location = document.querySelector('.location');
-    const icon = document.querySelector('.icon');
-    const humidity = document.querySelector('.humidity');
-    const wind = document.querySelector('.wind');
-    const feelLike = document.querySelector('.feelLike');
-    const pm2 = document.querySelector('.pm2');
-    const uv = document.querySelector('.uv');
+    
+    // Minimalist selectors
+    const tempElement = document.querySelector('.weather-temp');
+    const locationElement = document.querySelector('.weather-location');
+    const iconElement = document.querySelector('.weather-icon');
 
-    if (!temp || !condition || !location || !icon || !humidity || !wind || !feelLike || !pm2 || !uv) {
-        return;
-    }
+    if (!tempElement || !locationElement || !iconElement) return;
 
     function applyFallbackWeather() {
-        location.textContent = 'Location unavailable';
-        temp.textContent = '--°C';
-        condition.textContent = 'Weather unavailable';
-        icon.src = '';
-        icon.alt = 'Weather unavailable';
-        humidity.textContent = 'Humidity: --';
-        wind.textContent = 'Wind: -- km/h';
-        feelLike.textContent = 'Feels Like: --°C';
-        pm2.textContent = '--';
-        uv.textContent = '--';
+        locationElement.textContent = 'Location unavailable';
+        tempElement.textContent = '--°C';
+        iconElement.style.display = 'none';
+        iconElement.alt = 'Weather unavailable';
     }
 
     async function fetchWeatherByCity(city) {
@@ -41,21 +29,49 @@
             ? `https:${data.current.condition.icon}`
             : data.current.condition.icon;
 
-        location.textContent = `${data.location.name}, ${data.location.region}`;
-        temp.textContent = `${Math.floor(data.current.temp_c)}°C`;
-        condition.textContent = data.current.condition.text;
-        icon.src = iconUrl;
-        icon.alt = data.current.condition.text;
-        humidity.textContent = `Humidity: ${Math.floor(data.current.humidity)}`;
-        wind.textContent = `Wind: ${Math.floor(data.current.wind_kph)} km/h`;
-        feelLike.textContent = `Feels Like: ${Math.floor(data.current.feelslike_c)}°C`;
-        pm2.textContent = `${Math.floor(data.current.air_quality.pm2_5)}`;
-        uv.textContent = `${data.current.uv}`;
+        locationElement.textContent = data.location.name;
+        tempElement.textContent = `${Math.floor(data.current.temp_c)}°C`;
+        iconElement.src = iconUrl;
+        iconElement.alt = data.current.condition.text;
+        iconElement.style.display = 'block';
+
+        // Update Detailed Overlay
+        const feels = document.querySelector('#weather-feels');
+        const humidity = document.querySelector('#weather-humidity');
+        const wind = document.querySelector('#weather-wind');
+        const uv = document.querySelector('#weather-uv');
+        const aqi = document.querySelector('#weather-aqi');
+
+        if (feels) feels.textContent = `${Math.floor(data.current.feelslike_c)}°C`;
+        if (humidity) humidity.textContent = `${data.current.humidity}%`;
+        if (wind) wind.textContent = `${data.current.wind_kph} km/h`;
+        if (uv) uv.textContent = data.current.uv;
+        if (aqi && data.current.air_quality) {
+            aqi.textContent = Math.round(data.current.air_quality.pm2_5);
+        }
+    }
+
+    // Setup Click Listener for Overlay
+    const weatherWidget = document.querySelector('.weather-info');
+    const weatherOverlay = document.querySelector('#tool-weather');
+    const closeBtn = weatherOverlay?.querySelector('.btn-close');
+
+    if (weatherWidget && weatherOverlay) {
+        weatherWidget.style.cursor = 'pointer';
+        weatherWidget.addEventListener('click', () => {
+            weatherOverlay.style.display = 'grid';
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            weatherOverlay.style.display = 'none';
+        });
     }
 
     if (!navigator.geolocation) {
         try {
-            await updateWeather('New Delhi');
+            await updateWeather('New York');
         } catch (error) {
             applyFallbackWeather();
         }
@@ -67,23 +83,10 @@
             try {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-
-                const geoRes = await fetch(
-                    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-                );
-                if (!geoRes.ok) throw new Error('Location lookup failed');
-                const geoData = await geoRes.json();
-
-                const city =
-                    geoData.address?.city ||
-                    geoData.address?.town ||
-                    geoData.address?.county ||
-                    'New Delhi';
-
-                await updateWeather(city);
+                await updateWeather(`${lat},${lon}`);
             } catch (error) {
                 try {
-                    await updateWeather('New Delhi');
+                    await updateWeather('New York');
                 } catch (fallbackError) {
                     applyFallbackWeather();
                 }
@@ -91,11 +94,10 @@
         },
         async () => {
             try {
-                await updateWeather('New Delhi');
+                await updateWeather('New York');
             } catch (error) {
                 applyFallbackWeather();
             }
-        },
-        { timeout: 8000 }
+        }
     );
 }

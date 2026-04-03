@@ -1,201 +1,470 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Productivity Dashboard</title>
+    <title>Tracksy | Productivity Dashboard</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="src/style.css" />
 </head>
 
 <body>
-    <div id="main">
-        <div class="main-content">
+    <div id="app">
+        <div class="sidebar-overlay"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button id="sidebar-close" class="btn-close mobile-only" data-target="sidebar"><i data-lucide="x"></i></button>
+                <div class="logo">
+                   <div class="logo-icon"></div>
+                   <span class="logo-text">Tracksy</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <span class="section-title">MAIN</span>
+                    <a href="#" class="nav-item active" data-view="dashboard">
+                        <i data-lucide="layout-grid"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="ideas">
+                        <i data-lucide="folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="planner">
+                        <i data-lucide="calendar"></i>
+                        <span>Calendar</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="motivation">
+                        <i data-lucide="sparkles"></i>
+                        <span>Daily Inspiration</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <span class="section-title">TOOLS</span>
+                    <a href="#" class="nav-item" id="nav-timer">
+                        <i data-lucide="timer"></i>
+                        <span>Time Tracker</span>
+                    </a>
+                    <a href="#" class="nav-item" id="nav-todo" data-view="todo">
+                        <i data-lucide="check-square"></i>
+                        <span>Tasks</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item theme-toggle">
+                    <i data-lucide="moon"></i>
+                    <span>Dark Mode</span>
+                </a>
+                <a href="#" class="nav-item logout">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
             <header class="topbar">
-                <div class="brand-block">
-                    <h2>Productivity Dashboard</h2>
-                </div>
-
-                <div class="header-left">
-                    <h2 class="date"></h2>
-                    <h1 class="day"></h1>
-                    <h4 class="location"></h4>
-                </div>
-
-                <div class="header-right">
-                    <h2 class="temp"></h2>
-                    <div class="weather-condition">
-                        <img class="icon" src="" alt="Weather condition icon" />
-                        <h4 class="condition"></h4>
+                <div class="topbar-left">
+                    <button id="sidebar-open" class="btn-menu mobile-only"><i data-lucide="menu"></i></button>
+                    <h1 id="user-greeting">Hello, User!</h1>
+                    <div id="session-time-container">
+                        <span id="current-time">00:00 AM</span>
+                        <span id="current-date">Monday, January 1, 2026</span>
                     </div>
                 </div>
 
-                <button class="theme" type="button">
-                    <h4>Switch Theme</h4>
-                </button>
+                <div class="header-actions">
+                    <div class="weather-info">
+                        <img class="weather-icon" src="" alt="" />
+                        <span class="weather-temp">--°C</span>
+                        <span class="weather-location">Loading...</span>
+                    </div>
+                    <div class="user-profile" id="open-profile">
+                        <img id="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User Profile" />
+                    </div>
+                </div>
             </header>
 
-            <section class="allElems">
-                <div class="weather-details">
-                    <div class="detail">
-                        <p>Feels Like</p>
-                        <h3 class="feelLike">--</h3>
+            <section class="dashboard-overview">
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card" id="stat-projects">
+                        <div class="stat-icon icon-dark"><i data-lucide="briefcase"></i></div>
+                        <div class="stat-info">
+                            <h2 class="stat-value">0</h2>
+                            <p class="stat-label">projects <span class="sub">In Progress</span></p>
+                        </div>
                     </div>
-                    <div class="detail">
-                        <p>Humidity</p>
-                        <h3 class="humidity">--</h3>
+                    <div class="stat-card" id="stat-tasks">
+                        <div class="stat-icon icon-purple"><i data-lucide="check-square"></i></div>
+                        <div class="stat-info">
+                            <h2 class="stat-value">0</h2>
+                            <p class="stat-label">tasks <span class="sub">Remaining</span></p>
+                        </div>
                     </div>
-                    <div class="detail">
-                        <p>Wind</p>
-                        <h3 class="wind">--</h3>
+                    <div class="stat-card" id="stat-focus">
+                        <div class="stat-icon icon-gray"><i data-lucide="hourglass"></i></div>
+                        <div class="stat-info">
+                            <h2 class="stat-value">0<span>h</span></h2>
+                            <p class="stat-label">Focus Hours</p>
+                        </div>
                     </div>
-                    <div class="detail">
-                        <p>PM2.5</p>
-                        <h3 class="pm2">--</h3>
-                    </div>
-                    <div class="detail">
-                        <p>UV Index</p>
-                        <h3 class="uv">--</h3>
+                    <div class="stat-card" id="stat-activity">
+                        <div class="stat-info">
+                            <h2 class="stat-value">0<span> days</span></h2>
+                            <p class="stat-label">Active streak</p>
+                            <div class="activity-dots">
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="allFeatures">
-                    <div class="todo elem" id="0">
-                        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1400&auto=format&fit=crop" alt="Notebook and desk" />
-                        <h2>To-Do Manager</h2>
+                <!-- Widgets Grid -->
+                <div class="widgets-grid">
+                    <!-- Left Column -->
+                    <div class="widgets-left">
+                        <div class="widget-card productivity-trends">
+                            <div class="widget-header">
+                                <h3>Productivity Trends</h3>
+                                <p>Daily focus hours</p>
+                            </div>
+                            <div class="chart-container" id="productivity-chart">
+                                <div class="chart-bar-group">
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-sun" style="height: 10%"></div>
+                                        <span>S</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-mon" style="height: 10%"></div>
+                                        <span>M</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-tue" style="height: 10%"></div>
+                                        <span>T</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-wed" style="height: 10%"></div>
+                                        <span>W</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-thu" style="height: 10%"></div>
+                                        <span>T</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-fri" style="height: 10%"></div>
+                                        <span>F</span>
+                                    </div>
+                                    <div class="bar-col">
+                                        <div class="bar-value" id="bar-sat" style="height: 10%"></div>
+                                        <span>S</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="widgets-row">
+                            <div class="widget-card time-tracker-mini" id="timer-widget">
+                                <div class="widget-header">
+                                    <h3>Time Tracker</h3>
+                                    <div class="header-actions">
+                                        <button class="ctrl-btn start"><i data-lucide="play"></i></button>
+                                        <button class="ctrl-btn pause"><i data-lucide="pause"></i></button>
+                                        <button class="ctrl-btn stop"><i data-lucide="rotate-ccw"></i></button>
+                                    </div>
+                                </div>
+                                <div class="tracker-display">
+                                    <div class="arc-container">
+                                        <svg viewBox="0 0 100 80">
+                                            <path d="M 10 70 A 40 40 0 1 1 90 70" fill="none" stroke="#f3f4f6" stroke-width="8" stroke-linecap="round"/>
+                                            <path id="tracker-progress" d="M 10 70 A 40 40 0 1 1 90 70" fill="none" stroke="url(#gradient-orange)" stroke-width="8" stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="126"/>
+                                            <defs>
+                                                <linearGradient id="gradient-orange" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" style="stop-color:#ff8a00;stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:#ff4d00;stop-opacity:1" />
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                        <div class="timer-text">00:00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="widget-card reminders">
+                                <div class="widget-header">
+                                    <h3>Reminders</h3>
+                                    <div class="header-actions">
+                                        <button class="icon-btn-sm" id="prev-reminder"><i data-lucide="chevron-left"></i></button>
+                                        <button class="icon-btn-sm" id="next-reminder"><i data-lucide="chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                <div class="reminder-content">
+                                    <p class="reminder-subtitle">What's coming up next:</p>
+                                    <div class="reminder-item active">
+                                        <div class="reminder-info">
+                                            <h4 id="reminder-name">No tasks planned</h4>
+                                            <p id="reminder-details">Your schedule is clear.</p>
+                                            <div class="reminder-tags">
+                                                <span class="tag tag-work">Plan</span>
+                                                <span class="tag-time">--:--</span>
+                                            </div>
+                                        </div>
+                                        <div class="reminder-icon">
+                                            <i data-lucide="calendar" style="width: 32px; height: 32px; color: var(--purple);"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="daily elem" id="1">
-                        <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1400&auto=format&fit=crop" alt="Calendar planning setup" />
-                        <h2>Daily Planner</h2>
-                    </div>
-                    <div class="moti elem" id="2">
-                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1400&auto=format&fit=crop" alt="Motivational workspace" />
-                        <h2>Motivational Quotes</h2>
-                    </div>
-                    <div class="pomo elem" id="3">
-                        <img src="https://images.unsplash.com/photo-1474631245212-32dc3c8310c6?q=80&w=1400&auto=format&fit=crop" alt="Focus timer" />
-                        <h2>Focus Timer (Pomodoro)</h2>
-                    </div>
-                    <div class="idea elem" id="4">
-                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1400&auto=format&fit=crop" alt="Idea notes" />
-                        <h2>Idea Board</h2>
+
+                    <!-- Right Column -->
+                    <div class="widgets-right">
+                        <div class="widget-card balance-card">
+                            <div class="widget-header center">
+                                <div class="balance-chart">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="#e8e4ff" stroke-width="12" />
+                                        <circle id="balance-circle" cx="50" cy="50" r="40" fill="none" stroke="#7c5dfa" stroke-width="12" stroke-dasharray="0 251" />
+                                    </svg>
+                                    <div class="balance-center">
+                                        <span class="balance-label">Balance</span>
+                                        <span id="balance-percent">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="balance-info">
+                                <h3>Work-Life Balance</h3>
+                                <div class="balance-legend">
+                                    <div class="legend-item">
+                                        <span class="dot dot-lavender"></span>
+                                        <span class="label">Work Sessions</span>
+                                        <span id="work-sessions-count" class="value">0</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="dot dot-purple"></span>
+                                        <span class="label">Completed Tasks</span>
+                                        <span id="completed-tasks-count" class="value">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="widget-card inspiration-card">
+                            <div class="insights-header">
+                                <span class="insights-badge"><i data-lucide="sparkles"></i> Daily Inspiration</span>
+                                <button class="icon-btn-lite" id="refresh-quote"><i data-lucide="rotate-cw"></i></button>
+                            </div>
+                            <div class="insights-content">
+                                <div class="message-bubble">
+                                    <p id="insight-text">Finding the perfect inspiration for you...</p>
+                                </div>
+                                <div class="insights-actions">
+                                    <button class="btn-white" id="action-reschedule" data-view="planner">Plan Now</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
 
-        <section class="fullElem todo-fullpage">
-            <button class="back" id="0">Close</button>
-            <h2>Your Personalized Task List</h2>
-            <div class="todo-tools">
-                <input class="todo-search" type="text" placeholder="Search tasks..." />
-                <div class="todo-filters">
-                    <button class="todo-filter active" type="button" data-filter="all">All</button>
-                    <button class="todo-filter" type="button" data-filter="important">Important</button>
-                </div>
-                <div class="todo-stats">
-                    <span class="todo-total">Total: 0</span>
-                    <span class="todo-important">Important: 0</span>
-                </div>
-                <button class="todo-clear" type="button">Clear All</button>
+        <!-- Tool Overlays -->
+        <section class="tool-overlay" id="tool-todo" style="display: none;">
+            <div class="overlay-header">
+                <h2>Task Management</h2>
+                <button class="btn-close" data-target="todo"><i data-lucide="x"></i></button>
             </div>
-
-            <div class="todo-container">
-                <div class="addTask">
-                    <form>
-                        <input id="task-input" required type="text" placeholder="Enter task" />
-                        <textarea required placeholder="Enter details" rows="8"></textarea>
-                        <label class="imp-check">
-                            <input id="check" type="checkbox" />
-                            Mark as important
-                        </label>
-                        <button>Add Task</button>
-                    </form>
-                </div>
-                <div class="allTask"></div>
-            </div>
-        </section>
-
-        <section class="fullElem planner-fullpage">
-            <button class="back" id="1">Close</button>
-            <h1>Plan your day with intention</h1>
-            <div class="planner-controls">
-                <button class="planner-fill" type="button">Quick Fill</button>
-                <button class="planner-export" type="button">Export Plan</button>
-                <button class="planner-clear" type="button">Clear Plan</button>
-            </div>
-            <div class="day-planner"></div>
-        </section>
-
-        <section class="fullElem motivation-fullpage">
-            <button class="back" id="2">Close</button>
-            <div class="motivation-fullpage-container">
-                <div class="motivation-container">
-                    <div class="motivation-wrapper">
-                        <img src="./icons8-quotes-96.png" alt="Quote icon" />
-                        <div class="motivation-1">
-                            <h2>Quote of the Day</h2>
-                        </div>
-                        <div class="motivation-2">
-                            <h1>Loading...</h1>
-                        </div>
-                        <div class="motivation-3">
-                            <h2>Author Name</h2>
-                        </div>
-                        <div class="motivation-actions">
-                            <button class="quote-refresh" type="button">New Quote</button>
-                            <button class="quote-copy" type="button">Copy Quote</button>
-                        </div>
+            <div class="overlay-content">
+                <div class="todo-tools">
+                    <input class="todo-search" type="text" placeholder="Search tasks..." />
+                    <div class="todo-filters">
+                        <button class="todo-filter active" type="button" data-filter="all">All</button>
+                        <button class="todo-filter" type="button" data-filter="important">Important</button>
                     </div>
+                    <button class="todo-clear btn-danger">Clear Todos</button>
+                </div>
+                <div class="todo-container">
+                    <div class="addTask">
+                        <form>
+                            <input id="task-input" required type="text" placeholder="Enter task title" />
+                            <textarea id="task-detail" required placeholder="Enter task details..." rows="3"></textarea>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="check">
+                                <span class="checkmark"></span>
+                                Mark as Important
+                            </label>
+                            <button class="btn-primary">Add Task</button>
+                        </form>
+                    </div>
+                    <div class="allTask"></div>
                 </div>
             </div>
         </section>
 
-        <section class="fullElem pomodoro-fullpage">
-            <button class="back" id="3">Close</button>
-            <h1>Focus Sprint</h1>
-            <h4 class="session">Work Session</h4>
-            <div class="pomo-config">
-                <label>
-                    Work (min)
-                    <input class="work-minutes" type="number" min="1" max="120" value="25" />
-                </label>
-                <label>
-                    Break (min)
-                    <input class="break-minutes" type="number" min="1" max="60" value="5" />
-                </label>
-                <button class="apply-duration" type="button">Apply</button>
-                <p class="completed-cycles">Completed Cycles: 0</p>
+        <section class="tool-overlay" id="tool-planner" style="display: none;">
+            <div class="overlay-header">
+                <h2>Daily Planner</h2>
+                <button class="btn-close" data-target="planner"><i data-lucide="x"></i></button>
             </div>
-            <div class="pomo-timer">
-                <h1>25:00</h1>
-                <button class="start-timer">Start</button>
-                <button class="pause-timer">Pause</button>
-                <button class="reset-timer">Reset</button>
+            <div class="overlay-content">
+                <div class="planner-tools">
+                    <button class="planner-fill btn-secondary">Quick Template</button>
+                    <button class="planner-clear btn-danger">Clear Plan</button>
+                    <button class="planner-export btn-primary">Export TXT</button>
+                </div>
+                <div class="day-planner"></div>
             </div>
         </section>
 
-        <section class="fullElem idea-fullpage">
-            <button class="back" id="4">Close</button>
-            <h2>Idea Vault</h2>
-            <div class="idea-container">
-                <div class="addIdeas">
-                    <div class="idea-tools">
-                        <input class="idea-search" type="text" placeholder="Search ideas..." />
-                        <button class="idea-random" type="button">Pick Random</button>
+        <section class="tool-overlay" id="tool-ideas" style="display: none;">
+            <div class="overlay-header">
+                <h2>Idea Vault</h2>
+                <button class="btn-close" data-target="ideas"><i data-lucide="x"></i></button>
+            </div>
+            <div class="overlay-content">
+                <div class="idea-tools">
+                    <input class="idea-search" type="text" placeholder="Search ideas..." />
+                    <button class="idea-clear btn-danger">Clear Ideas</button>
+                </div>
+                <div class="idea-container">
+                    <div class="addIdeas">
+                        <form>
+                            <input id="idea-input" required type="text" placeholder="Capture a new idea..." />
+                            <button class="btn-primary">Save Idea</button>
+                        </form>
                     </div>
-                    <p class="idea-highlight">Random pick will appear here.</p>
-                    <form>
-                        <input id="idea-input" required type="text" placeholder="Capture your idea" />
-                        <button>+</button>
-                    </form>
                     <div class="allIdeas"></div>
                 </div>
             </div>
         </section>
+
+        <section class="tool-overlay" id="tool-motivation" style="display: none;">
+            <div class="overlay-header">
+                <h2>Motivational Quotes</h2>
+                <button class="btn-close" data-target="motivation"><i data-lucide="x"></i></button>
+            </div>
+            <div class="overlay-content quote-view">
+                <div class="quote-card">
+                    <i data-lucide="quote" class="quote-icon"></i>
+                    <h1 class="motivation-2">"Your daily motivation will appear here."</h1>
+                    <h3 class="motivation-3">— Author</h3>
+                    <div class="quote-actions">
+                        <button class="quote-refresh btn-primary">New Quote</button>
+                        <button class="quote-copy btn-secondary">Copy Quote</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tool-overlay" id="tool-weather" style="display: none;">
+            <div class="overlay-header">
+                <h2>Detailed Weather</h2>
+                <button class="btn-close" data-target="weather"><i data-lucide="x"></i></button>
+            </div>
+            <div class="overlay-content weather-details">
+                <div class="weather-grid">
+                    <div class="weather-card">
+                        <i data-lucide="thermometer"></i>
+                        <div class="card-info">
+                            <span class="card-label">Feels Like</span>
+                            <h3 id="weather-feels">--°C</h3>
+                        </div>
+                    </div>
+                    <div class="weather-card">
+                        <i data-lucide="droplets"></i>
+                        <div class="card-info">
+                            <span class="card-label">Humidity</span>
+                            <h3 id="weather-humidity">--%</h3>
+                        </div>
+                    </div>
+                    <div class="weather-card">
+                        <i data-lucide="wind"></i>
+                        <div class="card-info">
+                            <span class="card-label">Wind Speed</span>
+                            <h3 id="weather-wind">-- km/h</h3>
+                        </div>
+                    </div>
+                    <div class="weather-card">
+                        <i data-lucide="sun"></i>
+                        <div class="card-info">
+                            <span class="card-label">UV Index</span>
+                            <h3 id="weather-uv">--</h3>
+                        </div>
+                    </div>
+                    <div class="weather-card highlight">
+                        <i data-lucide="shield-alert"></i>
+                        <div class="card-info">
+                            <span class="card-label">PM2.5 (Air Quality)</span>
+                            <h3 id="weather-aqi">--</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Modal -->
+         <section class="tool-overlay" id="tool-profile" style="display: none;">
+            <div class="overlay-header">
+                <h2>Profile Settings</h2>
+                <button class="btn-close" data-target="profile"><i data-lucide="x"></i></button>
+            </div>
+            <div class="overlay-content profile-edit">
+                <div class="profile-preview">
+                    <img id="edit-avatar" src="" alt="Avatar Preview" />
+                    <button id="change-avatar" class="btn-secondary">Randomize Avatar</button>
+                </div>
+                <div class="profile-form">
+                    <div class="input-group">
+                        <label for="user-name-input">Your Name</label>
+                        <input type="text" id="user-name-input" placeholder="Enter your name" />
+                    </div>
+                    <button id="save-profile" class="btn-primary">Save Changes</button>
+                </div>
+            </div>
+         </section>
     </div>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <!-- Logout Confirmation Overlay -->
+    <section class="tool-overlay" id="tool-logout" style="display: none;">
+        <div class="overlay-content danger-modal">
+            <div class="overlay-header">
+                <h2>Clear All Data?</h2>
+                <p>This will reset your entire dashboard environment.</p>
+            </div>
+            
+            <div class="alert-body">
+                <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
+                <div class="alert-message">
+                    <p><strong>Heads up:</strong> We use local storage to keep your data private and on your device. Logging out will <strong>permanently delete</strong> all your tasks, projects, schedules, and settings.</p>
+                    <p class="warning">This action is irreversible and cannot be recovered.</p>
+                </div>
+            </div>
+
+            <div class="alert-actions">
+                <button class="btn-secondary btn-close">Keep My Data</button>
+                <button class="btn-danger" id="confirm-logout">Reset & Logout</button>
+            </div>
+        </div>
+    </section>
 
     <script type="module" src="src/script.js"></script>
 </body>
-
 </html>

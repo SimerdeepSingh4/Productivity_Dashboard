@@ -1,41 +1,55 @@
 export default function motivationPage() {
-    const motivationQuote = document.querySelector('.motivation-2 h1');
-    const motivationAuthor = document.querySelector('.motivation-3 h2');
-    const refreshButton = document.querySelector('.quote-refresh');
+    // Dashboard Inspiration Bubble
+    const inspirationBubble = document.querySelector('#insight-text');
+    const refreshBtn = document.querySelector('#refresh-quote');
+    
+    // Overlay Selectors
+    const motivationQuote = document.querySelector('.motivation-2');
+    const motivationAuthor = document.querySelector('.motivation-3');
+    const overlayRefresh = document.querySelector('.quote-refresh');
     const copyButton = document.querySelector('.quote-copy');
-    if (!motivationQuote || !motivationAuthor) return;
 
     async function fetchQuote() {
-        motivationQuote.textContent = 'Loading...';
-        motivationAuthor.textContent = '';
+        const loadingMsg = 'Finding your inspiration...';
+        if (inspirationBubble) inspirationBubble.textContent = loadingMsg;
+        if (motivationQuote) motivationQuote.textContent = 'Loading...';
+        
         try {
             const response = await fetch('https://random-quotes-freeapi.vercel.app/api/random');
             if (!response.ok) throw new Error('Failed to fetch quote');
 
             const data = await response.json();
-            motivationQuote.textContent = data.quote || 'Stay consistent. Progress compounds.';
-            motivationAuthor.textContent = data.author || 'Unknown';
+            const quoteText = data.quote || 'Stay consistent. Progress compounds.';
+            const author = data.author || 'Unknown';
+
+            if (inspirationBubble) {
+                inspirationBubble.innerHTML = `"${quoteText}" <br><small>— ${author}</small>`;
+            }
+            
+            if (motivationQuote) motivationQuote.textContent = `"${quoteText}"`;
+            if (motivationAuthor) motivationAuthor.textContent = `— ${author}`;
         } catch (error) {
-            motivationQuote.textContent = 'Could not load quote right now.';
-            motivationAuthor.textContent = 'Try again in a moment.';
+            const errorMsg = 'Could not load inspiration right now. Stay focused!';
+            if (inspirationBubble) inspirationBubble.textContent = errorMsg;
+            if (motivationQuote) motivationQuote.textContent = errorMsg;
         }
     }
 
-    if (refreshButton) {
-        refreshButton.addEventListener('click', fetchQuote);
-    }
+    if (refreshBtn) refreshBtn.addEventListener('click', fetchQuote);
+    if (overlayRefresh) overlayRefresh.addEventListener('click', fetchQuote);
 
     if (copyButton) {
         copyButton.addEventListener('click', async () => {
-            const payload = `${motivationQuote.textContent} — ${motivationAuthor.textContent}`;
+            const payload = `${motivationQuote.textContent} ${motivationAuthor.textContent}`;
             try {
                 await navigator.clipboard.writeText(payload);
-                copyButton.textContent = 'Copied';
+                const originalText = copyButton.textContent;
+                copyButton.textContent = 'Copied!';
                 setTimeout(() => {
-                    copyButton.textContent = 'Copy Quote';
+                    copyButton.textContent = originalText;
                 }, 1200);
             } catch (error) {
-                copyButton.textContent = 'Copy Failed';
+                copyButton.textContent = 'Failed';
                 setTimeout(() => {
                     copyButton.textContent = 'Copy Quote';
                 }, 1200);
@@ -43,5 +57,6 @@ export default function motivationPage() {
         });
     }
 
+    // Refresh once on start
     fetchQuote();
 }
