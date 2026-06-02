@@ -69,18 +69,21 @@ export default function initCommandPalette() {
         },
         {
             id: 'cmd-toggle-theme',
-            icon: 'sun',
-            title: 'Toggle Color Theme',
-            subtitle: 'Switch between light and dark modes',
+            icon: 'palette',
+            title: 'Cycle Color Theme',
+            subtitle: 'Switch between light, dark, nord, forest, and sunset themes',
             shortcut: '/theme',
             action: () => {
+                const themes = ['dark', 'light', 'nord', 'emerald', 'sunset'];
                 const body = document.body;
                 const current = body.getAttribute('data-theme') || 'dark';
-                const next = current === 'dark' ? 'light' : 'dark';
+                const currentIndex = themes.indexOf(current);
+                const nextIndex = (currentIndex + 1) % themes.length;
+                const next = themes[nextIndex];
                 body.setAttribute('data-theme', next);
                 localStorage.setItem('theme', next);
                 
-                // Dispatch event so theme toggle changes name
+                // Dispatch event so theme selection syncs
                 window.dispatchEvent(new CustomEvent('dataUpdate'));
             }
         },

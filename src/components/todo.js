@@ -18,6 +18,8 @@ export default function todoList() {
     const taskDueInput = document.querySelector('#task-due-input');
     const modalCloseButtons = document.querySelectorAll('.modal-close[data-target="task"]');
     const btnDeleteTask = document.querySelector('#btn-delete-task');
+    const clearTasksModal = document.querySelector('#modal-clear-tasks');
+    const confirmClearTasksBtn = document.querySelector('#confirm-clear-tasks');
 
     if (!taskListContainer || !taskModal || !taskForm) return;
 
@@ -249,10 +251,19 @@ export default function todoList() {
     btnAddTaskInline?.addEventListener('click', () => openTaskModal());
     
     cleanCompletedBtn?.addEventListener('click', () => {
-        // Remove completed tasks
-        tasks = tasks.filter(t => !t.completed);
+        if (tasks.length === 0) return;
+        if (clearTasksModal) {
+            clearTasksModal.style.display = 'flex';
+        }
+    });
+
+    confirmClearTasksBtn?.addEventListener('click', () => {
+        tasks = [];
         persistTasks();
         renderTasks();
+        if (clearTasksModal) {
+            clearTasksModal.style.display = 'none';
+        }
     });
 
     // Modal Delete Button Click

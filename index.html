@@ -49,7 +49,7 @@
                         <span class="weather-temp">--°C</span>
                     </div>
                     <button class="icon-btn" id="btn-history" title="View History"><i data-lucide="history"></i></button>
-                    <button class="icon-btn" id="btn-theme-toggle" title="Toggle Theme"><i data-lucide="sun"></i></button>
+                    <button class="icon-btn" id="btn-theme-toggle" title="Change Theme"><i data-lucide="palette"></i></button>
                     <button class="btn-primary" id="btn-new-task"><i data-lucide="plus"></i>New Task</button>
                     <div class="user-profile" id="open-profile" title="Profile Settings">
                         <img id="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User Profile" />
@@ -69,7 +69,7 @@
                                 <h3>Today's Focus</h3>
                                 <span class="task-count-badge" id="focus-task-count">0 remaining</span>
                             </div>
-                            <button class="icon-btn-lite" id="btn-clean-tasks" title="Clear completed tasks"><i data-lucide="trash"></i></button>
+                            <button class="icon-btn-lite" id="btn-clean-tasks" title="Delete all tasks"><i data-lucide="trash-2"></i></button>
                         </div>
                         <div class="widget-content scrollable-y" id="focus-task-list">
                             <!-- Tasks loaded dynamically -->
@@ -215,16 +215,14 @@
 
                 <!-- FOOTER ROW: Full-width Quote -->
                 <div class="grid-row-footer" style="flex-shrink: 0; min-height: auto;">
-                    <section class="widget-card widget-quote" id="panel-quote" style="padding: 12px 20px; width: 100%; min-height: auto; flex-direction: row; align-items: center; justify-content: space-between;">
-                        <div class="quote-widget-content" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;">
-                            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
-                                <i data-lucide="quote" style="width: 14px; height: 14px; color: var(--purple); flex-shrink: 0;"></i>
-                                <p style="font-size: 12.5px; font-style: italic; line-height: 1.4; color: var(--text-primary); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;" id="dashboard-quote-text">
-                                    "Loading your daily motivation..."
-                                </p>
-                                <span style="font-size: 11px; color: var(--text-secondary); white-space: nowrap; flex-shrink: 0;" id="dashboard-quote-author">— Loading</span>
+                    <section class="widget-card widget-quote" id="panel-quote">
+                        <div class="quote-widget-content">
+                            <div class="quote-text-wrapper">
+                                <i data-lucide="quote"></i>
+                                <p id="dashboard-quote-text">"Loading your daily motivation..."</p>
+                                <span id="dashboard-quote-author">— Loading</span>
                             </div>
-                            <button class="icon-btn-lite" id="btn-refresh-quote-dashboard" title="Refresh Quote" style="width: 24px; height: 24px; flex-shrink: 0;"><i data-lucide="rotate-cw" style="width: 12px; height: 12px;"></i></button>
+                            <button class="icon-btn-lite" id="btn-refresh-quote-dashboard" title="Refresh Quote"><i data-lucide="rotate-cw"></i></button>
                         </div>
                     </section>
                 </div>
@@ -463,9 +461,120 @@
                         <p class="warning">This action is irreversible and cannot be recovered.</p>
                     </div>
                 </div>
-                <div class="alert-actions">
+                <div class="modal-actions">
                     <button class="btn-secondary modal-close" data-target="logout">Cancel</button>
                     <button class="btn-danger" id="confirm-logout">Reset & Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear Tasks Confirmation Modal -->
+        <div class="modal-overlay" id="modal-clear-tasks" style="display:none;">
+            <div class="modal-box danger-modal">
+                <div class="modal-header">
+                    <h2>Clear All Tasks?</h2>
+                    <button class="modal-close" data-target="clear-tasks"><i data-lucide="x"></i></button>
+                </div>
+                <div class="alert-body">
+                    <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
+                    <div class="alert-message">
+                        <p>Are you sure you want to delete all tasks in your Today's Focus list?</p>
+                        <p class="warning">This action cannot be undone.</p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary modal-close" data-target="clear-tasks">Cancel</button>
+                    <button class="btn-danger" id="confirm-clear-tasks">Delete All Tasks</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div class="modal-overlay" id="modal-history" style="display:none;">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>Productivity History</h2>
+                    <button class="modal-close" data-target="history"><i data-lucide="x"></i></button>
+                </div>
+                <div class="history-modal-body scrollable-y" style="max-height: 320px; margin-top: 10px;">
+                    <div id="history-items-container">
+                        <!-- Dynamic history logs list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Selection Modal -->
+        <div class="modal-overlay" id="modal-theme" style="display:none;">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>Choose Color Theme</h2>
+                    <button class="modal-close" data-target="theme"><i data-lucide="x"></i></button>
+                </div>
+                <div class="theme-modal-body" style="margin-top: 15px;">
+                    <div class="theme-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                        
+                        <!-- Dark Theme -->
+                        <div class="theme-card" data-theme-val="dark" style="border-radius: 14px; padding: 16px; cursor: pointer;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">Classic Dark</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #9f7aea;"></span>
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #08080a;"></span>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">Original deep neon purple console</p>
+                        </div>
+                        
+                        <!-- Light Theme -->
+                        <div class="theme-card" data-theme-val="light" style="border-radius: 14px; padding: 16px; cursor: pointer;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">Classic Light</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #6366f1;"></span>
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #f8fafc;"></span>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">Clean and bright slate contrast style</p>
+                        </div>
+
+                        <!-- Nordic Frost Theme -->
+                        <div class="theme-card" data-theme-val="nord" style="border-radius: 14px; padding: 16px; cursor: pointer;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">Nordic Frost</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #38bdf8;"></span>
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #060b13;"></span>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">Cool polar slate canvas and icy blue accents</p>
+                        </div>
+
+                        <!-- Emerald Forest Theme -->
+                        <div class="theme-card" data-theme-val="emerald" style="border-radius: 14px; padding: 16px; cursor: pointer;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">Emerald Forest</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981;"></span>
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #030c08;"></span>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">Sage green canvas with forest emerald accents</p>
+                        </div>
+
+                        <!-- Sunset Glow Theme -->
+                        <div class="theme-card" data-theme-val="sunset" style="border-radius: 14px; padding: 16px; cursor: pointer;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">Sunset Glow</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #f97316;"></span>
+                                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #090502;"></span>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">Warm amber canvas and golden orange accents</p>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

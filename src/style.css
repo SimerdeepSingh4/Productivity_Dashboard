@@ -1,17 +1,17 @@
 :root {
-    /* Dark Theme Variables (Default) */
-    --bg: #09090b;
-    --card-bg: #121216;
-    --border-color: #222228;
-    --inner-bg: #1a1a20;
+    /* Dark Theme Variables (Midnight Purple) */
+    --bg: #08080a;
+    --card-bg: #101014;
+    --border-color: #1c1c24;
+    --inner-bg: #14141a;
     --text-primary: #f4f4f5;
     --text-secondary: #a1a1aa;
     --text-muted: #52525b;
     
     /* Accents */
-    --purple: #8b5cf6;
-    --purple-hover: #7c3aed;
-    --purple-glow: rgba(139, 92, 246, 0.15);
+    --purple: #9f7aea;
+    --purple-hover: #805ad5;
+    --purple-glow: rgba(159, 122, 234, 0.15);
     
     --cyan: #4fd1c5;
     --cyan-glow: rgba(79, 209, 197, 0.15);
@@ -25,35 +25,93 @@
     --blue: #1d4ed8;
     --blue-glow: rgba(29, 78, 216, 0.15);
 
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
-    --palette-bg: rgba(18, 18, 22, 0.85);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+    --palette-bg: rgba(16, 16, 20, 0.85);
     
     --font-sans: 'Inter', sans-serif;
     --font-display: 'Outfit', sans-serif;
 }
 
-/* Light Theme Variables */
+/* Light Theme Variables (Minimalist Slate) */
 body[data-theme='light'] {
-    --bg: #f4f4f5;
+    --bg: #f8fafc;
     --card-bg: #ffffff;
-    --border-color: #e4e4e7;
-    --inner-bg: #f9f9fb;
-    --text-primary: #09090b;
-    --text-secondary: #71717a;
-    --text-muted: #a1a1aa;
+    --border-color: #e2e8f0;
+    --inner-bg: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
     
-    --purple-glow: rgba(139, 92, 246, 0.08);
-    --cyan-glow: rgba(79, 209, 197, 0.08);
-    --green-glow: rgba(16, 185, 129, 0.08);
-    --red-glow: rgba(239, 68, 68, 0.08);
-    --blue-glow: rgba(29, 78, 216, 0.08);
+    --purple: #6366f1;
+    --purple-hover: #4f46e5;
+    --purple-glow: rgba(99, 102, 241, 0.08);
     
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.12);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.1);
     --palette-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* Nordic Frost Theme Variables (Polar Blue) */
+body[data-theme='nord'] {
+    --bg: #060b13;
+    --card-bg: #0c1322;
+    --border-color: #1e293b;
+    --inner-bg: #121b2f;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    
+    --purple: #38bdf8;
+    --purple-hover: #0ea5e9;
+    --purple-glow: rgba(56, 189, 248, 0.15);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+    --palette-bg: rgba(12, 19, 34, 0.85);
+}
+
+/* Emerald Forest Theme Variables (Sage Forest) */
+body[data-theme='emerald'] {
+    --bg: #030c08;
+    --card-bg: #08140f;
+    --border-color: #132c21;
+    --inner-bg: #0e1d17;
+    --text-primary: #f0fdf4;
+    --text-secondary: #a7f3d0;
+    --text-muted: #047857;
+    
+    --purple: #10b981;
+    --purple-hover: #059669;
+    --purple-glow: rgba(16, 185, 129, 0.15);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.8);
+    --palette-bg: rgba(8, 20, 15, 0.85);
+}
+
+/* Sunset Glow Theme Variables (Copper Espresso) */
+body[data-theme='sunset'] {
+    --bg: #090502;
+    --card-bg: #120a05;
+    --border-color: #24140a;
+    --inner-bg: #1b0e07;
+    --text-primary: #fff7ed;
+    --text-secondary: #ffedd5;
+    --text-muted: #c2410c;
+    
+    --purple: #f97316;
+    --purple-hover: #ea580c;
+    --purple-glow: rgba(249, 115, 22, 0.15);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.8);
+    --palette-bg: rgba(18, 10, 5, 0.85);
 }
 
 /* Base Styles */
@@ -1503,3 +1561,94 @@ body {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Motivational Quote Highlight */
+.widget-quote {
+    padding: 22px 24px !important;
+    width: 100% !important;
+    min-height: auto !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-left: 4px solid var(--purple) !important;
+    background: linear-gradient(90deg, var(--purple-glow) 0%, var(--card-bg) 100%) !important;
+    box-shadow: 0 4px 16px var(--purple-glow) !important;
+    transition: all 0.3s ease !important;
+}
+
+.widget-quote:hover {
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.22) !important;
+    border-color: var(--purple-hover) !important;
+    transform: translateY(-1px);
+}
+
+.quote-widget-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.quote-text-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.quote-text-wrapper i {
+    width: 18px !important;
+    height: 18px !important;
+    color: var(--purple);
+    flex-shrink: 0;
+}
+
+.quote-text-wrapper p {
+    font-size: 15px !important;
+    font-style: italic !important;
+    line-height: 1.5 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.quote-text-wrapper span {
+    font-size: 12.5px !important;
+    color: var(--text-secondary) !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#btn-refresh-quote-dashboard {
+    width: 28px !important;
+    height: 28px !important;
+    flex-shrink: 0;
+}
+
+#btn-refresh-quote-dashboard i {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Theme Modal Card Styles */
+.theme-card {
+    border: 2px solid var(--border-color) !important;
+    background: var(--card-bg) !important;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.theme-card:hover {
+    transform: translateY(-2px);
+}
+
+.theme-card.active {
+    border-color: var(--purple) !important;
+    box-shadow: 0 0 14px var(--purple-glow) !important;
+}
+
+
