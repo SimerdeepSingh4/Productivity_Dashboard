@@ -1,104 +1,103 @@
 export default function openFeatures() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const toolOverlays = document.querySelectorAll('.tool-overlay');
-    const closeButtons = document.querySelectorAll('.btn-close');
-    const dashboard = document.querySelector('.dashboard-overview');
+    const modalOverlays = document.querySelectorAll('.modal-overlay');
+    const closeButtons = document.querySelectorAll('.modal-close');
+    
+    // Trigger buttons
     const profileBtn = document.querySelector('#open-profile');
-    const logoutBtn = document.querySelector('.logout');
+    const weatherBtn = document.querySelector('#open-weather');
+    const themeToggleBtn = document.querySelector('#btn-theme-toggle');
+    const historyBtn = document.querySelector('#btn-history');
     const confirmLogoutBtn = document.querySelector('#confirm-logout');
 
-    function closeAllOverlays() {
-        toolOverlays.forEach(overlay => overlay.style.display = 'none');
-        if (dashboard) dashboard.style.display = 'block';
-        
-        // Reset active state to Overview if everything is closed
-        navItems.forEach(nav => nav.classList.remove('active'));
-        const overview = document.querySelector('[data-view="dashboard"]');
-        if (overview) overview.classList.add('active');
+    // Open Modals
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            document.querySelector('#modal-profile').style.display = 'flex';
+        });
     }
 
-    function openOverlay(viewId) {
-        const overlay = document.querySelector(`#tool-${viewId}`);
-        if (overlay) {
-            toolOverlays.forEach(o => o.style.display = 'none');
-            if (dashboard) dashboard.style.display = 'none';
-            overlay.style.display = 'grid'; // Using grid for modal alignment
-        }
+    if (weatherBtn) {
+        weatherBtn.addEventListener('click', () => {
+            document.querySelector('#modal-weather').style.display = 'flex';
+        });
     }
 
-    navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            const view = item.getAttribute('data-view');
-            if (!view) return; // Skip if no view specified (e.g. logout/theme)
+    if (themeToggleBtn) {
+        const syncThemeIcon = () => {
+            const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+            const icon = themeToggleBtn.querySelector('i');
+            if (icon) {
+                icon.setAttribute('data-lucide', currentTheme === 'dark' ? 'sun' : 'moon');
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+        };
 
-            e.preventDefault();
-            
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
+        // Sync initial state
+        syncThemeIcon();
 
-            if (view === 'dashboard') {
-                closeAllOverlays();
+        // Listen for updates (from button click or command palette)
+        themeToggleBtn.addEventListener('click', () => {
+            const body = document.body;
+            const current = body.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            syncThemeIcon();
+            window.dispatchEvent(new CustomEvent('dataUpdate'));
+        });
+
+        window.addEventListener('dataUpdate', syncThemeIcon);
+    }
+
+    if (historyBtn) {
+        historyBtn.addEventListener('click', () => {
+            alert('📅 History Logs:\n\nFocus sessions and completed tasks are tracked automatically in local storage to power your productivity trends graphs.');
+        });
+    }
+
+    // Close Modals Helper
+    function closeAllModals() {
+        modalOverlays.forEach(overlay => {
+            // Don't close the command palette if it is handled separately, but closing everything is fine too
+            overlay.style.display = 'none';
+        });
+    }
+
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+            if (target) {
+                const modal = document.querySelector(`#modal-${target}`);
+                if (modal) modal.style.display = 'none';
             } else {
-                openOverlay(view);
+                closeAllModals();
             }
         });
     });
 
-    // Profile Trigger
-    if (profileBtn) {
-        profileBtn.addEventListener('click', () => {
-            openOverlay('profile');
+    // Backdrop Click
+    modalOverlays.forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+            }
         });
-    }
+    });
 
-    // Logout Confirmation
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openOverlay('logout');
-        });
-    }
+    // Escape Key Close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeAllModals();
+        }
+    });
 
+    // Confirm Logout Reset
     if (confirmLogoutBtn) {
         confirmLogoutBtn.addEventListener('click', () => {
             localStorage.clear();
             window.location.reload();
         });
     }
-
-    // Close Buttons
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            closeAllOverlays();
-        });
-    });
-
-    // Close on backdrop click (optional but good)
-    toolOverlays.forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeAllOverlays();
-            }
-        });
-    });
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeAllOverlays();
-        }
-    });
-
-    // Special Dashboard Actions (e.g. "Plan Now" button)
-    const planNowBtn = document.querySelector('#action-reschedule');
-    if (planNowBtn) {
-        planNowBtn.addEventListener('click', () => {
-             openOverlay('planner');
-             navItems.forEach(nav => nav.classList.remove('active'));
-             document.querySelector('[data-view="planner"]')?.classList.add('active');
-        });
-    }
-
-    // Global listener for other components to trigger a layout reset
-    window.addEventListener('closeOverlays', closeAllOverlays);
 }

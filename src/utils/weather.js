@@ -3,13 +3,13 @@ export default async function getWeather() {
     
     // Minimalist selectors
     const tempElement = document.querySelector('.weather-temp');
-    const locationElement = document.querySelector('.weather-location');
+    const locationElement = document.querySelector('#weather-location') || document.querySelector('.weather-location');
     const iconElement = document.querySelector('.weather-icon');
 
-    if (!tempElement || !locationElement || !iconElement) return;
+    if (!tempElement || !iconElement) return;
 
     function applyFallbackWeather() {
-        locationElement.textContent = 'Location unavailable';
+        if (locationElement) locationElement.textContent = 'Location unavailable';
         tempElement.textContent = '--°C';
         iconElement.style.display = 'none';
         iconElement.alt = 'Weather unavailable';
@@ -29,7 +29,7 @@ export default async function getWeather() {
             ? `https:${data.current.condition.icon}`
             : data.current.condition.icon;
 
-        locationElement.textContent = data.location.name;
+        if (locationElement) locationElement.textContent = data.location.name;
         tempElement.textContent = `${Math.floor(data.current.temp_c)}°C`;
         iconElement.src = iconUrl;
         iconElement.alt = data.current.condition.text;
@@ -51,23 +51,6 @@ export default async function getWeather() {
         }
     }
 
-    // Setup Click Listener for Overlay
-    const weatherWidget = document.querySelector('.weather-info');
-    const weatherOverlay = document.querySelector('#tool-weather');
-    const closeBtn = weatherOverlay?.querySelector('.btn-close');
-
-    if (weatherWidget && weatherOverlay) {
-        weatherWidget.style.cursor = 'pointer';
-        weatherWidget.addEventListener('click', () => {
-            weatherOverlay.style.display = 'grid';
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            weatherOverlay.style.display = 'none';
-        });
-    }
 
     if (!navigator.geolocation) {
         try {

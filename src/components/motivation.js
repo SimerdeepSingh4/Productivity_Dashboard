@@ -1,62 +1,68 @@
 export default function motivationPage() {
-    // Dashboard Inspiration Bubble
-    const inspirationBubble = document.querySelector('#insight-text');
-    const refreshBtn = document.querySelector('#refresh-quote');
-    
-    // Overlay Selectors
-    const motivationQuote = document.querySelector('.motivation-2');
-    const motivationAuthor = document.querySelector('.motivation-3');
-    const overlayRefresh = document.querySelector('.quote-refresh');
-    const copyButton = document.querySelector('.quote-copy');
+    const quoteTextEl = document.querySelector('#dashboard-quote-text');
+    const quoteAuthorEl = document.querySelector('#dashboard-quote-author');
+    const refreshBtn = document.querySelector('#btn-refresh-quote-dashboard');
+
+    if (!quoteTextEl || !quoteAuthorEl) return;
+
+    const FALLBACK_QUOTES = [
+        { quote: "Stay consistent. Progress compounds.", author: "Unknown" },
+        { quote: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+        { quote: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+        { quote: "Your mind is for having ideas, not holding them.", author: "David Allen" },
+        { quote: "Do not wait; the time will never be 'just right.'", author: "Napoleon Hill" },
+        { quote: "It is not that we have a short time to live, but that we waste a lot of it.", author: "Seneca" }
+    ];
+
+    function applyQuote(text, author) {
+        quoteTextEl.textContent = `"${text}"`;
+        quoteAuthorEl.textContent = `— ${author}`;
+    }
 
     async function fetchQuote() {
-        const loadingMsg = 'Finding your inspiration...';
-        if (inspirationBubble) inspirationBubble.textContent = loadingMsg;
-        if (motivationQuote) motivationQuote.textContent = 'Loading...';
-        
+        if (refreshBtn) {
+            const icon = refreshBtn.querySelector('i');
+            if (icon) icon.classList.add('spin-animation'); // visual cue
+        }
+
         try {
             const response = await fetch('https://random-quotes-freeapi.vercel.app/api/random');
-            if (!response.ok) throw new Error('Failed to fetch quote');
+            if (!response.ok) throw new Error('API down');
 
             const data = await response.json();
-            const quoteText = data.quote || 'Stay consistent. Progress compounds.';
+            const text = data.quote || 'Stay consistent. Progress compounds.';
             const author = data.author || 'Unknown';
 
-            if (inspirationBubble) {
-                inspirationBubble.innerHTML = `"${quoteText}" <br><small>— ${author}</small>`;
-            }
-            
-            if (motivationQuote) motivationQuote.textContent = `"${quoteText}"`;
-            if (motivationAuthor) motivationAuthor.textContent = `— ${author}`;
+            // Cache quote
+            localStorage.setItem('tracksy_cached_quote', JSON.stringify({ text, author }));
+            applyQuote(text, author);
         } catch (error) {
-            const errorMsg = 'Could not load inspiration right now. Stay focused!';
-            if (inspirationBubble) inspirationBubble.textContent = errorMsg;
-            if (motivationQuote) motivationQuote.textContent = errorMsg;
+            // Apply fallback
+            const rand = FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)];
+            applyQuote(rand.quote, rand.author);
+        } finally {
+            if (refreshBtn) {
+                const icon = refreshBtn.querySelector('i');
+                if (icon) icon.classList.remove('spin-animation');
+            }
         }
     }
 
-    if (refreshBtn) refreshBtn.addEventListener('click', fetchQuote);
-    if (overlayRefresh) overlayRefresh.addEventListener('click', fetchQuote);
-
-    if (copyButton) {
-        copyButton.addEventListener('click', async () => {
-            const payload = `${motivationQuote.textContent} ${motivationAuthor.textContent}`;
-            try {
-                await navigator.clipboard.writeText(payload);
-                const originalText = copyButton.textContent;
-                copyButton.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyButton.textContent = originalText;
-                }, 1200);
-            } catch (error) {
-                copyButton.textContent = 'Failed';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copy Quote';
-                }, 1200);
-            }
-        });
+    // Refresh listener
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', fetchQuote);
     }
 
-    // Refresh once on start
-    fetchQuote();
+    // Load from cache first for instant render, otherwise fetch
+    const cached = localStorage.getItem('tracksy_cached_quote');
+    if (cached) {
+        try {
+            const { text, author } = JSON.parse(cached);
+            applyQuote(text, author);
+        } catch (e) {
+            fetchQuote();
+        }
+    } else {
+        fetchQuote();
+    }
 }
